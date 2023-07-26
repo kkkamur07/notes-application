@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "796514530226",
+    "project_id": "my-notes-kaza-prac",
+    "storage_bucket": "my-notes-kaza-prac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796514530226:android:4c6ca763cf0946c7e6eaab",
+        "android_client_info": {
+          "package_name": "com.example.bloc_learn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796514530226-790pkncfjfpfoqofdm05npmj3uvo9pqk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3ltdFP1jVjtzQXDsI362-Vrjgv9XH6zs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796514530226-790pkncfjfpfoqofdm05npmj3uvo9pqk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796514530226-jr87n8olvvng7jbrif0u7enn8n5f6im4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.blocLearn"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:796514530226:android:2206b9004d2cc0dfe6eaab",
+        "android_client_info": {
+          "package_name": "com.example.vandal_course"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "796514530226-790pkncfjfpfoqofdm05npmj3uvo9pqk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3ltdFP1jVjtzQXDsI362-Vrjgv9XH6zs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "796514530226-790pkncfjfpfoqofdm05npmj3uvo9pqk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "796514530226-jr87n8olvvng7jbrif0u7enn8n5f6im4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.blocLearn"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,25 @@
+[?1049h[>4;2m[?1h=[?2004h[?1004h[1;24r[?12h[?12l[22;2t[22;1t[27m[29m[m[H[2J[?25l[24;1H"~/.zshrc" 21L, 599B[1;1Hexport PATH="$PATH:/Users/krishuagarwal/Desktop/Programming/Flutter/flutter/bin"[7;1H# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/krishuagarwal/miniconda3/bin/conda' 'shell.zsh' 'hook'  [10;1H2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/krishuagarwal/miniconda3/etc/profile.d/conda.sh" ]; then[15;9H. "/Users/krishuagarwal/miniconda3/etc/profile.d/conda.sh"
+    else[17;9Hexport PATH="/Users/krishuagarwal/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+[94m~                                                                               [1;1H[?25h[?4m
+
+[?25l[3;23r[m[23;1H
+[1;24r[23;1H[94m~                                                                               [m[24;1H[K[3;1H[?25h
+
+
+[5;1H[4;1H[3;1H[2;1H[?25l[2;23r[23;1H
+[1;24r[23;1H[94m~                                                                               [2;1H[?25h[?25l[2;23r[m[23;1H
+[1;24r[23;1H[94m~                                                                               [2;1H[?25h[24;1H[m[?1004l[?2004l[?1l>[?1049l[>4;mVim: Caught deadly signal HUP
+Vim: preserving files...
+Vim: Finished.
+[24;1H[23;2t[23;1t
