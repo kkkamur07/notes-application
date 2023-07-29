@@ -1,9 +1,7 @@
 import 'dart:developer' as developer show log;
 import 'package:vandal_course/constants/routes.dart';
-import 'package:vandal_course/view/login_view.dart';
-
+import 'package:vandal_course/util/show_error_dialogs.dart';
 import "../constants/log.dart" as log;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -60,22 +58,46 @@ class _RegisterViewState extends State<RegisterView> {
               String email = _email?.text ?? "";
               String password = _password?.text ?? "";
               try {
-                final credential =
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
+                //? Prompting the user to verify the email
+                final user = FirebaseAuth.instance.currentUser;
+                //? Sending the verification email before routing to the screen.
+                await user?.sendEmailVerification();
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyEmailRoute, (route) => false);
                 //? Logging the values
                 developer.log(log.userSignedIn);
-                developer.log(credential.toString());
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  print('The password provided is too weak.');
+                  await showErrorDialog(
+                    context,
+                    'The password provided is too weak.',
+                  );
                 } else if (e.code == 'email-already-in-use') {
-                  print('The account already exists for that email.');
+                  await showErrorDialog(
+                    context,
+                    'Email is already in use',
+                  );
                 } else if (e.code == "invalid-email") {
-                  print("Invalid-Email");
+                  await showErrorDialog(
+                    context,
+                    'Invalid Email ',
+                  );
+                } else {
+                  await showErrorDialog(
+                    context,
+                    "Error : ${e.code}",
+                  );
                 }
+                //? Catches anyOther exception that is not firebase exception.
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  "Error : $e",
+                );
               }
             },
             child: const Text("Register"),
@@ -92,6 +114,5 @@ class _RegisterViewState extends State<RegisterView> {
         ],
       ),
     );
-    ;
   }
 }
