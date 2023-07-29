@@ -1,5 +1,5 @@
 import 'dart:developer' as developer show log;
-import 'package:vandal_course/view/register_view.dart';
+import 'package:vandal_course/constants/routes.dart';
 
 import "../constants/log.dart" as log;
 
@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {
-  static String route = "/login/";
   const LoginView({super.key});
 
   @override
@@ -69,6 +68,11 @@ class _LoginViewState extends State<LoginView> {
                 // print(credential);
                 developer.log(credential.toString());
                 developer.log(log.userLogIn);
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  notesRoute,
+                  (route) => false,
+                );
               } on FirebaseAuthException catch (e) {
                 //? Add logging here.
                 if (e.code == 'user-not-found') {
@@ -88,7 +92,7 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () {
               //? This will cause an error in because it doesn't have any scaffold.
               Navigator.of(context).pushNamedAndRemoveUntil(
-                RegisterView.route,
+                registerRoute,
                 (route) => false,
               );
             },

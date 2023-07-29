@@ -1,4 +1,5 @@
 import 'dart:developer' as developer show log;
+import 'package:vandal_course/constants/routes.dart';
 import 'package:vandal_course/view/login_view.dart';
 
 import "../constants/log.dart" as log;
@@ -7,7 +8,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
-  static String route = "/register/";
   const RegisterView({super.key});
 
   @override
@@ -83,7 +83,7 @@ class _RegisterViewState extends State<RegisterView> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                LoginView.route,
+                loginRoute,
                 (route) => false,
               );
             },
