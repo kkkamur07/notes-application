@@ -1,10 +1,13 @@
-import 'dart:developer' as developer;
+import 'dart:developer' as developer show log;
+import 'package:vandal_course/view/register_view.dart';
+
 import "../constants/log.dart" as log;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {
+  static String route = "/login/";
   const LoginView({super.key});
 
   @override
@@ -32,53 +35,66 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: _email,
-          enableSuggestions: true,
-          autocorrect: false,
-          decoration: const InputDecoration(hintText: "Enter your Email"),
-          keyboardType: TextInputType.emailAddress,
-        ),
-        TextField(
-          controller: _password,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          keyboardType: TextInputType.visiblePassword,
-          decoration: const InputDecoration(hintText: "Input your password"),
-        ),
-        TextButton(
-          onPressed: () async {
-            // This needs to be a future builder.
+    return Scaffold(
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            enableSuggestions: true,
+            autocorrect: false,
+            decoration: const InputDecoration(hintText: "Enter your Email"),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _password,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.visiblePassword,
+            decoration: const InputDecoration(hintText: "Input your password"),
+          ),
+          TextButton(
+            onPressed: () async {
+              // This needs to be a future builder.
 
-            String email = _email?.text ?? "";
-            String password = _password?.text ?? "";
-            try {
-              final credential =
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                email: email,
-                password: password,
-              );
-              //? Logging
-              developer.log(credential.toString());
-              developer.log(log.userLogIn);
-            } on FirebaseAuthException catch (e) {
-              //? Add logging here.
-              if (e.code == 'user-not-found') {
-                print('No user found for that email.');
-              } else if (e.code == 'wrong-password') {
-                print('Wrong password provided for that user.');
-              } else {
-                print(e.code);
+              String email = _email?.text ?? "";
+              String password = _password?.text ?? "";
+              try {
+                final credential =
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+                //? Logging
+                // print(credential);
+                developer.log(credential.toString());
+                developer.log(log.userLogIn);
+              } on FirebaseAuthException catch (e) {
+                //? Add logging here.
+                if (e.code == 'user-not-found') {
+                  print('No user found for that email.');
+                } else if (e.code == 'wrong-password') {
+                  print('Wrong password provided for that user.');
+                } else {
+                  print(e.code);
+                }
               }
-            }
-          },
-          child: const Text("Login"),
-        ),
-      ],
+            },
+            child: const Text("Login"),
+          ),
+          //? The link between login view and register view.
+          TextButton(
+            child: const Text("Not registered Yet? Register Here"),
+            onPressed: () {
+              //? This will cause an error in because it doesn't have any scaffold.
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                RegisterView.route,
+                (route) => false,
+              );
+            },
+          ),
+        ],
+      ),
     );
-    ;
   }
 }
