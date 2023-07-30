@@ -1,8 +1,9 @@
 import '../auth/auth_user.dart';
 
-//? Basically this class is about the things we can do with the provider.
+//? Basically the blueprint of what the provider should look like
 abstract class AuthProvider {
   AuthUser? get currentUser;
+  Future<void> initialize();
 
   Future<AuthUser?> logIn({
     required String Email,

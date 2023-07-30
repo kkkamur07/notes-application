@@ -1,12 +1,10 @@
-import "package:firebase_auth/firebase_auth.dart";
-import "package:firebase_core/firebase_core.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:vandal_course/constants/routes.dart";
+import "package:vandal_course/services/auth/auth_service.dart";
 import "package:vandal_course/view/login_view.dart";
 import "package:vandal_course/view/notes_view.dart";
 import "package:vandal_course/view/register_view.dart";
-import "firebase_options.dart";
 import './view/verify_email.dart';
 
 void main() {
@@ -40,17 +38,13 @@ class VandalLearn extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
+        future: AuthService.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
-              //? If the user is email verified?
-              final emailVerified = user?.emailVerified ?? false;
+              final user = AuthService.firebase().currentUser;
               if (user != null) {
-                if (emailVerified) {
+                if (user.isEmailVerified) {
                   return NotesView();
                 } else {
                   return VerifyEmailView();

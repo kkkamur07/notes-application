@@ -1,9 +1,10 @@
 import 'dart:developer' as developer show log;
 import 'package:vandal_course/constants/routes.dart';
+import 'package:vandal_course/services/auth/auth_exceptions.dart';
+import 'package:vandal_course/services/auth/auth_service.dart';
 
 import "../constants/log.dart" as log;
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../util/show_error_dialogs.dart';
@@ -61,13 +62,12 @@ class _LoginViewState extends State<LoginView> {
               String email = _email?.text ?? "";
               String password = _password?.text ?? "";
               try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: email,
+                await AuthService.firebase().logIn(
+                  Email: email,
                   password: password,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                final emailVerified = user?.emailVerified ?? false;
-                if (emailVerified) {
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     notesRoute,
                     (route) => false,
@@ -80,35 +80,23 @@ class _LoginViewState extends State<LoginView> {
                 }
                 developer.log(log.userLogIn);
                 //? Your Error handling have to be robust.
-              } on FirebaseAuthException catch (e) {
-                //? Add logging here.
-                if (e.code == 'user-not-found') {
-                  await showErrorDialog(
-                    context,
-                    "User Not Found",
-                  );
-                } else if (e.code == 'wrong-password') {
-                  await showErrorDialog(
-                    context,
-                    "Wrong Passwordr",
-                  );
-                } else if (e.code == "invalid-email") {
-                  await showErrorDialog(
-                    context,
-                    "Invalid Email",
-                  );
-                } else {
-                  await showErrorDialog(
-                    context,
-                    "Error ${e.code}",
-                  );
-                }
-                //? You can use catch to catch other errors.
-              } catch (e) {
+              } on UserNotFoundException {
                 await showErrorDialog(
                   context,
-                  e.toString(),
+                  "User Not Found",
                 );
+              } on WrongPasswordException {
+                await showErrorDialog(
+                  context,
+                  "Wrong Passwordr",
+                );
+              } on InvalidEmailException {
+                await showErrorDialog(
+                  context,
+                  "Invalid Email",
+                );
+              } on GenericAuthExceptions {
+                await showErrorDialog(context, "Authentication Error");
               }
             },
             child: const Text("Login"),

@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vandal_course/constants/routes.dart';
+import 'package:vandal_course/services/auth/auth_service.dart';
 import "dart:developer" as developer show log;
-
-enum MenuAction { logout }
+import "../enums/menu_action.dart";
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -35,7 +34,7 @@ class _NotesViewState extends State<NotesView> {
                   final shouldLogout = await showLogoutDialogBox(context);
                   if (shouldLogout) {
                     //? We have to wait for the async operation - and return back to the login screen.
-                    await FirebaseAuth.instance.signOut();
+                    await AuthService.firebase().logOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
                       loginRoute,
                       (_) => false,
