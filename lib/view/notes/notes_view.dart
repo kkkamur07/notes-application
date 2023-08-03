@@ -84,6 +84,8 @@ class _NotesViewState extends State<NotesView> {
                     // We need to use the waiting because stream will be ongoing unlike future.
                     case ConnectionState.waiting:
                       return const Text("Notes will appear here");
+                    case ConnectionState.active:
+                      return const Text("Finally notes coming");
                     default:
                       return const CircularProgressIndicator();
                   }
