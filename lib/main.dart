@@ -3,7 +3,8 @@ import "package:flutter/services.dart";
 import "package:vandal_course/constants/routes.dart";
 import "package:vandal_course/services/auth/auth_service.dart";
 import "package:vandal_course/view/login_view.dart";
-import "package:vandal_course/view/notes_view.dart";
+import "package:vandal_course/view/notes/new_notes_view.dart";
+import 'package:vandal_course/view/notes/notes_view.dart';
 import "package:vandal_course/view/register_view.dart";
 import './view/verify_email.dart';
 
@@ -20,10 +21,11 @@ void main() {
           theme: ThemeData(),
           initialRoute: '/',
           routes: {
-            verifyEmailRoute: (context) => VerifyEmailView(),
-            registerRoute: (context) => RegisterView(),
-            loginRoute: (context) => LoginView(),
-            notesRoute: (context) => NotesView(),
+            verifyEmailRoute: (context) => const VerifyEmailView(),
+            registerRoute: (context) => const RegisterView(),
+            loginRoute: (context) => const LoginView(),
+            notesRoute: (context) => const NotesView(),
+            newNotesRoute: (context) => const NewNotesView(),
           },
         ),
       );

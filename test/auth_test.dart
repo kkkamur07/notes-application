@@ -105,7 +105,7 @@ class MockAuthProvider implements AuthProvider {
     // Creating some mock state
     if (Email == "foobar@bar.com") throw UserNotFoundException();
     if (password == "foobar") throw WrongPasswordException();
-    AuthUser user = AuthUser(isEmailVerified: false);
+    AuthUser user = AuthUser(isEmailVerified: false, email: "foobar@bar.com");
     _user = user;
     //? If you want to return a future user value.
     return Future.value(user);
@@ -129,7 +129,7 @@ class MockAuthProvider implements AuthProvider {
     final user = _user;
     if (user == null) throw UserNotFoundException();
     //? So basically
-    final newUser = AuthUser(isEmailVerified: true);
+    final newUser = AuthUser(isEmailVerified: true, email: "foobar@bar.com");
     _user = newUser;
   }
 }
