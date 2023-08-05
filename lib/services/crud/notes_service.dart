@@ -12,15 +12,22 @@ class NotesService {
 
   //Clever way to create a singleton
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    // Initializing when the sharedInstance is created
+    _notesStreamController = StreamController<List<DatabaseNotes>>.broadcast(
+      // To ensure that we have old values in our stream as well.
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
 
   // People should be able to listen to the notes.
   List<DatabaseNotes> _notes = [];
 
   // UI is going to be listening to the changes in the stream
-  final _notesStreamController =
-      StreamController<List<DatabaseNotes>>.broadcast();
+  late final StreamController<List<DatabaseNotes>> _notesStreamController;
 
   // Getter for getting the notes.
   Stream<List<DatabaseNotes>> get allNotes => _notesStreamController.stream;
@@ -39,8 +46,9 @@ class NotesService {
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
       return createdUser;
-    } catch (e) {
-      rethrow;
+    } on UserNotFound {
+      final createdUser = await createUser(email: email);
+      return createdUser;
     }
   }
 
@@ -143,15 +151,9 @@ class NotesService {
     if (deletedCount == 0) {
       throw CouldNotDeleteNote();
     } else {
-      final countBefore = _notes.length;
-      //? Where to remove the notes
-      _notes.where((note) => note.id == id);
-      if (_notes.length == countBefore) {
-        // Then update the Stream
-        _notesStreamController.add(_notes);
-      } else {
-        throw CouldNotDeleteNote();
-      }
+      _notes.removeWhere((note) => note.id == id);
+      //Updating the stream
+      _notesStreamController.add(_notes);
     }
   }
 
@@ -337,7 +339,7 @@ class DatabaseNotes {
 
   @override
   String toString() =>
-      'Note, ID = $id, userID = $userId, isSynchedWithCloud = $isSyncedWithCloud';
+      'Note, ID = $id, userID = $userId, isSynchedWithCloud = $isSyncedWithCloud, text = $text';
 
   @override
   bool operator ==(covariant DatabaseNotes other) => id == other.id;
@@ -349,7 +351,7 @@ class DatabaseNotes {
 const idColumn = 'id';
 const emailColumn = 'email';
 const textNotesColumn = 'text';
-const isSynchedWithCloudColumn = 'is_synched_with_cloud';
+const isSynchedWithCloudColumn = "is_synced_with_cloud";
 const userIdColumn = 'user_id';
 const dbName = 'notes.db';
 const noteTable = 'notes';

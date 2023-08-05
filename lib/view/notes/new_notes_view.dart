@@ -42,14 +42,16 @@ class _NewNotesViewState extends State<NewNotesView> {
 
   // Adding listeners to the text Editing Controller.
 
-  void _setupTextEditingController() async {
+  void _setupTextEditingController() {
     _textNotes.removeListener(_textEditingControllerUpdate);
     _textNotes.addListener(_textEditingControllerUpdate);
   }
 
   Future<DatabaseNotes> createNewNote() async {
     final existingNote = _note;
-    if (existingNote != null) return existingNote;
+    if (existingNote != null) {
+      return existingNote;
+    }
 
     final currentUser = AuthService.firebase().currentUser!;
     final userEmail = currentUser.email!;
@@ -57,18 +59,18 @@ class _NewNotesViewState extends State<NewNotesView> {
     return await _notesService.createNote(owner: userOwner);
   }
 
-  void _deleteNoteIfTextIsEmpty() {
+  void _deleteNoteIfTextIsEmpty() async {
     final notes = _note;
     if (_textNotes.text.isEmpty && notes != null) {
-      _notesService.deleteNote(id: notes.id);
+      await _notesService.deleteNote(id: notes.id);
     }
   }
 
-  void _saveNoteIfTextIsNotEmpty() {
+  void _saveNoteIfTextIsNotEmpty() async {
     final note = _note;
     final text = _textNotes.text;
     if (note != null && text.isNotEmpty) {
-      _notesService.updateNotes(
+      await _notesService.updateNotes(
         note: note,
         text: text,
       );

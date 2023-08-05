@@ -7,7 +7,7 @@ import "../constants/log.dart" as log;
 
 import 'package:flutter/material.dart';
 
-import '../util/show_error_dialogs.dart';
+import '../util/dialogs/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

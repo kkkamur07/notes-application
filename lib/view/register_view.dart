@@ -2,9 +2,10 @@ import 'dart:developer' as developer show log;
 import 'package:vandal_course/constants/routes.dart';
 import 'package:vandal_course/services/auth/auth_exceptions.dart';
 import 'package:vandal_course/services/auth/auth_service.dart';
-import 'package:vandal_course/util/show_error_dialogs.dart';
 import "../constants/log.dart" as log;
 import 'package:flutter/material.dart';
+
+import '../util/dialogs/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
