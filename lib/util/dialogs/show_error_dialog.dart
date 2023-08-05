@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:vandal_course/util/dialogs/show_generic_dialog.dart';
 

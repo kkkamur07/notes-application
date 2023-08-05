@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vandal_course/services/auth/auth_service.dart';
 import 'package:vandal_course/services/crud/notes_service.dart';
+import 'package:vandal_course/util/generics/get_arguments.dart';
 
 class NewNotesView extends StatefulWidget {
   const NewNotesView({super.key});
@@ -47,7 +48,16 @@ class _NewNotesViewState extends State<NewNotesView> {
     _textNotes.addListener(_textEditingControllerUpdate);
   }
 
-  Future<DatabaseNotes> createNewNote() async {
+  Future<DatabaseNotes> createOrGetExistingNote(BuildContext context) async {
+    //So basically it sees if have the existing note.
+    final widgetNote = context.getArgument<DatabaseNotes>();
+
+    if (widgetNote != null) {
+      _note = widgetNote;
+      _textNotes.text = widgetNote.text;
+      return widgetNote;
+    }
+
     final existingNote = _note;
     if (existingNote != null) {
       return existingNote;
@@ -56,7 +66,9 @@ class _NewNotesViewState extends State<NewNotesView> {
     final currentUser = AuthService.firebase().currentUser!;
     final userEmail = currentUser.email!;
     final userOwner = await _notesService.getOrCreateUser(email: userEmail);
-    return await _notesService.createNote(owner: userOwner);
+    final newNote = await _notesService.createNote(owner: userOwner);
+    _note = newNote;
+    return newNote;
   }
 
   void _deleteNoteIfTextIsEmpty() async {
@@ -84,12 +96,11 @@ class _NewNotesViewState extends State<NewNotesView> {
         title: const Text("Create New Notes"),
       ),
       body: FutureBuilder(
-        future: createNewNote(),
+        future: createOrGetExistingNote(context),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              // This is how we can get the data from the snapshot.
-              _note = snapshot.data;
+              //Widgets core section shouldn't change much.
               _setupTextEditingController();
               return TextField(
                 controller: _textNotes,

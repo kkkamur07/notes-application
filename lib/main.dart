@@ -3,7 +3,7 @@ import "package:flutter/services.dart";
 import "package:vandal_course/constants/routes.dart";
 import "package:vandal_course/services/auth/auth_service.dart";
 import "package:vandal_course/view/login_view.dart";
-import "package:vandal_course/view/notes/new_notes_view.dart";
+import 'package:vandal_course/view/notes/create_update_note_view.dart';
 import 'package:vandal_course/view/notes/notes_view.dart';
 import "package:vandal_course/view/register_view.dart";
 import './view/verify_email.dart';
