@@ -49,13 +49,19 @@ class FirebaseCloudStorage {
   }
 
   //C in CRUD
-  Future<void> createNewNotes(
-      {required String ownerID, required String text}) async {
+  Future<CloudNote> createNewNotes(
+      {required String ownerID, String text = ''}) async {
     try {
-      DocumentReference doc = await notes.add({
+      final DocumentReference doc = await notes.add({
         col.ownerUserIdFieldName: ownerID,
         col.textField: text,
       });
+      final fetchedNote = await doc.get();
+      return CloudNote(
+        documentId: fetchedNote.id,
+        ownerUserId: ownerID,
+        text: text,
+      );
     } catch (e) {
       throw CouldNotCreateNotes();
     }
