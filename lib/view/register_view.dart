@@ -35,76 +35,79 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            enableSuggestions: true,
-            autocorrect: false,
-            decoration: const InputDecoration(hintText: "Enter your Email"),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: const InputDecoration(hintText: "Input your password"),
-          ),
-          TextButton(
-            onPressed: () async {
-              // This needs to be a future builder.
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            TextField(
+              controller: _email,
+              enableSuggestions: true,
+              autocorrect: false,
+              decoration: const InputDecoration(hintText: "Enter your Email"),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: _password,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              keyboardType: TextInputType.visiblePassword,
+              decoration:
+                  const InputDecoration(hintText: "Input your password"),
+            ),
+            TextButton(
+              onPressed: () async {
+                // This needs to be a future builder.
 
-              String email = _email?.text ?? "";
-              String password = _password?.text ?? "";
-              try {
-                await AuthService.firebase().createUser(
-                  Email: email,
-                  password: password,
-                );
-                //? To send the verification Email
-                await AuthService.firebase().sendEmailVerification();
+                String email = _email?.text ?? "";
+                String password = _password?.text ?? "";
+                try {
+                  await AuthService.firebase().createUser(
+                    Email: email,
+                    password: password,
+                  );
+                  //? To send the verification Email
+                  await AuthService.firebase().sendEmailVerification();
 
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute, (route) => false);
+
+                  developer.log(log.userSignedIn);
+                } on WeakPasswordException {
+                  await showErrorDialog(
+                    context,
+                    'The password provided is too weak.',
+                  );
+                } on EmailAlreadyInUseException {
+                  await showErrorDialog(
+                    context,
+                    'Email is already in use',
+                  );
+                } on InvalidEmailException {
+                  await showErrorDialog(
+                    context,
+                    'Invalid Email',
+                  );
+                } on GenericAuthExceptions {
+                  await showErrorDialog(
+                    context,
+                    "Authentication Error",
+                  );
+                }
+              },
+              child: const Text("Register"),
+            ),
+            TextButton(
+              onPressed: () {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                    verifyEmailRoute, (route) => false);
-
-                developer.log(log.userSignedIn);
-              } on WeakPasswordException {
-                await showErrorDialog(
-                  context,
-                  'The password provided is too weak.',
+                  loginRoute,
+                  (route) => false,
                 );
-              } on EmailAlreadyInUseException {
-                await showErrorDialog(
-                  context,
-                  'Email is already in use',
-                );
-              } on InvalidEmailException {
-                await showErrorDialog(
-                  context,
-                  'Invalid Email',
-                );
-              } on GenericAuthExceptions {
-                await showErrorDialog(
-                  context,
-                  "Authentication Error",
-                );
-              }
-            },
-            child: const Text("Register"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                loginRoute,
-                (route) => false,
-              );
-            },
-            child: const Text("Already Registered? Login here. "),
-          ),
-        ],
+              },
+              child: const Text("Already Registered? Login here. "),
+            ),
+          ],
+        ),
       ),
     );
   }

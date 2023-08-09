@@ -37,82 +37,85 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            enableSuggestions: true,
-            autocorrect: false,
-            decoration: const InputDecoration(hintText: "Enter your Email"),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            keyboardType: TextInputType.visiblePassword,
-            decoration: const InputDecoration(hintText: "Input your password"),
-          ),
-          TextButton(
-            onPressed: () async {
-              // This needs to be a future builder.
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            TextField(
+              controller: _email,
+              enableSuggestions: true,
+              autocorrect: false,
+              decoration: const InputDecoration(hintText: "Enter your Email"),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: _password,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              keyboardType: TextInputType.visiblePassword,
+              decoration:
+                  const InputDecoration(hintText: "Input your password"),
+            ),
+            TextButton(
+              onPressed: () async {
+                // This needs to be a future builder.
 
-              String email = _email?.text ?? "";
-              String password = _password?.text ?? "";
-              try {
-                await AuthService.firebase().logIn(
-                  Email: email,
-                  password: password,
-                );
-                final user = AuthService.firebase().currentUser;
-                if (user?.isEmailVerified ?? false) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    notesRoute,
-                    (route) => false,
+                String email = _email?.text ?? "";
+                String password = _password?.text ?? "";
+                try {
+                  await AuthService.firebase().logIn(
+                    Email: email,
+                    password: password,
                   );
-                } else {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    verifyEmailRoute,
-                    (route) => false,
+                  final user = AuthService.firebase().currentUser;
+                  if (user?.isEmailVerified ?? false) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute,
+                      (route) => false,
+                    );
+                  }
+                  developer.log(log.userLogIn);
+                  //? Your Error handling have to be robust.
+                } on UserNotFoundException {
+                  await showErrorDialog(
+                    context,
+                    "User Not Found",
                   );
+                } on WrongPasswordException {
+                  await showErrorDialog(
+                    context,
+                    "Wrong Passwordr",
+                  );
+                } on InvalidEmailException {
+                  await showErrorDialog(
+                    context,
+                    "Invalid Email",
+                  );
+                } on GenericAuthExceptions {
+                  await showErrorDialog(context, "Authentication Error");
                 }
-                developer.log(log.userLogIn);
-                //? Your Error handling have to be robust.
-              } on UserNotFoundException {
-                await showErrorDialog(
-                  context,
-                  "User Not Found",
+              },
+              child: const Text("Login"),
+            ),
+            //? The link between login view and register view.
+            TextButton(
+              child: const Text("Not registered Yet? Register Here"),
+              onPressed: () {
+                //? This will cause an error in because it doesn't have any scaffold.
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  registerRoute,
+                  (route) => false,
                 );
-              } on WrongPasswordException {
-                await showErrorDialog(
-                  context,
-                  "Wrong Passwordr",
-                );
-              } on InvalidEmailException {
-                await showErrorDialog(
-                  context,
-                  "Invalid Email",
-                );
-              } on GenericAuthExceptions {
-                await showErrorDialog(context, "Authentication Error");
-              }
-            },
-            child: const Text("Login"),
-          ),
-          //? The link between login view and register view.
-          TextButton(
-            child: const Text("Not registered Yet? Register Here"),
-            onPressed: () {
-              //? This will cause an error in because it doesn't have any scaffold.
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                registerRoute,
-                (route) => false,
-              );
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

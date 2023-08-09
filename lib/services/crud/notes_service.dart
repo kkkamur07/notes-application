@@ -5,10 +5,14 @@ import "package:sqflite/sqflite.dart";
 import "package:path_provider/path_provider.dart"
     show getApplicationDocumentsDirectory, MissingPlatformDirectoryException;
 import "package:path/path.dart" show join;
+import "package:vandal_course/util/generics/list_filter.dart";
 import "../crud/crud_exception.dart";
+import "../crud/crud_constants.dart";
 
 class NotesService {
   Database? _db;
+
+  DatabaseUser? _user;
 
   //Clever way to create a singleton
   static final NotesService _shared = NotesService._sharedInstance();
@@ -30,7 +34,18 @@ class NotesService {
   late final StreamController<List<DatabaseNotes>> _notesStreamController;
 
   // Getter for getting the notes.
-  Stream<List<DatabaseNotes>> get allNotes => _notesStreamController.stream;
+  Stream<List<DatabaseNotes>> get allNotes =>
+      _notesStreamController.stream.filter(
+        (note) {
+          final currentUser = _user;
+          if (currentUser != null) {
+            // The Filtering condition.
+            return note.userId == currentUser.id;
+          } else {
+            throw UserShouldBeSetBeforeReadingNotes();
+          }
+        },
+      );
 
   Future<void> _ensureDbIsOpen() async {
     try {
@@ -38,16 +53,25 @@ class NotesService {
     } on DataBaseAlreadyOpenException {}
   }
 
-  Future<DatabaseUser> getOrCreateUser({required String email}) async {
-    await _ensureDbIsOpen();
+  Future<DatabaseUser> getOrCreateUser(
+      {required String email, bool setAsCurrentUser = true}) async {
     try {
       final user = await getUser(email: email);
+      if (setAsCurrentUser) {
+        _user = user;
+      }
       return user;
     } on CouldNotFindUser {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     } on UserNotFound {
       final createdUser = await createUser(email: email);
+      if (setAsCurrentUser) {
+        _user = createdUser;
+      }
       return createdUser;
     }
   }
@@ -347,29 +371,3 @@ class DatabaseNotes {
   @override
   int get hashCode => id.hashCode;
 }
-
-const idColumn = 'id';
-const emailColumn = 'email';
-const textNotesColumn = 'text';
-const isSynchedWithCloudColumn = "is_synced_with_cloud";
-const userIdColumn = 'user_id';
-const dbName = 'notes.db';
-const noteTable = 'notes';
-const userTable = 'user';
-
-const createNotesTable = '''
-      CREATE TABLE IF NOT EXISTS "notes" (
-	    "id"	INTEGER NOT NULL,
-	    "user_id"	INTEGER NOT NULL,
-	    "text"	TEXT,
-	    "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
-	    PRIMARY KEY("id"),
-	    FOREIGN KEY("user_id") REFERENCES "user"("id")
-      ); ''';
-
-const createUserTable = '''
-      CREATE TABLE IF NOT EXISTS "user" (
-	    "id"	INTEGER NOT NULL,
-	    "email"	TEXT NOT NULL UNIQUE,
-	    PRIMARY KEY("id" AUTOINCREMENT)
-      ); ''';
